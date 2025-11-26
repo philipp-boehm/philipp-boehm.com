@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Neon-Runner!!!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Courier New', Courier, monospace; }
+        #canvas-container { width: 100vw; height: 100vh; display: block; }
+        
+        /* UI Overlay Styles */
+        .ui-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .interactive { pointer-events: auto; }
+        
+        .hud-score {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 10px #0ff;
+        }
+
+        .hud-speed {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 18px;
+            color: #f0f;
+            text-shadow: 0 0 10px #f0f;
+        }
+
+        .title-text {
+            font-size: 4rem;
+            font-weight: 900;
+            color: transparent;
+            -webkit-text-stroke: 2px #fff;
+            text-shadow: 0 0 20px #f0f, 0 0 40px #0ff;
+            margin-bottom: 2rem;
+            letter-spacing: 4px;
+        }
+
+        .btn-neon {
+            background: rgba(0,0,0,0.8);
+            border: 2px solid #0ff;
+            color: #0ff;
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px #0ff inset, 0 0 20px #0ff;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-neon:hover {
+            background: #0ff;
+            color: #000;
+            box-shadow: 0 0 30px #0ff;
+        }
+    </style>
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+    <!-- 3D Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <!-- UI Overlay: Start Screen -->
+    <div id="start-screen" class="ui-layer interactive">
+        <h1 class="title-text">NEON RUNNER</h1>
+        <p class="text-cyan-300 text-lg mb-4 text-shadow-glow">Maus bewegen / Touch zum Steuern</p>
+        <button id="start-btn" class="btn-neon">START</button>
+    </div>
+
+    <!-- UI Overlay: Game Over Screen -->
+    <div id="game-over-screen" class="ui-layer interactive hidden">
+        <h1 class="text-6xl font-bold text-red-500 mb-4" style="text-shadow: 0 0 20px red;">CRASH!</h1>
+        <p class="text-white text-2xl mb-6">Score: <span id="final-score">0</span></p>
+        <button id="restart-btn" class="btn-neon" style="border-color: #f0f; color: #f0f; box-shadow: 0 0 15px #f0f inset, 0 0 20px #f0f;">RESTART</button>
+    </div>
+
+    <!-- UI Overlay: In-Game HUD -->
+    <div id="hud" class="ui-layer hidden">
+        <div class="hud-score">SCORE: <span id="score">0</span></div>
+        <div class="hud-speed">GESCHWINDIGKEIT: <span id="speed-display">100%</span></div>
+    </div>
+
+    <script>
+        /**
+         * NEON RUNNER - Ein standalone HTML5 Spiel
+         * Nutzt Three.js für 3D Rendering
+         */
+
+        // --- Globale Variablen ---
+        let scene, camera, renderer;
+        let player, floorGrid;
+        let obstacles = [];
+        let particles = [];
+        let score = 0;
+        let speed = 0.5;
+        let isGameRunning = false;
+        let frameId;
+        
+        const LANE_WIDTH = 1.5;
+        const MAX_X = 5;
+        
+        // Audio Context für Soundeffekte
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+
+        // --- Sound Generator (Synthesizer) ---
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            if (type === 'start') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.5);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.5);
+            } else if (type === 'crash') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.5);
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.5);
+            } else if (type === 'score') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.1);
+            }
+        }
+
+        // --- Initialisierung ---
+        function init() {
+            // Scene Setup
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x050011);
+            scene.fog = new THREE.FogExp2(0x050011, 0.03);
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.set(0, 3, 8);
+            camera.lookAt(0, 0, 0);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            dirLight.position.set(0, 10, 0);
+            scene.add(dirLight);
+
+            // Boden (Grid) - Endless Effect
+            const gridHelper = new THREE.GridHelper(200, 100, 0xff00ff, 0x220044);
+            gridHelper.position.z = -50;
+            floorGrid = gridHelper;
+            scene.add(floorGrid);
+
+            // Boden (Plane für Reflektion/Schwarz)
+            const planeGeo = new THREE.PlaneGeometry(200, 200);
+            const planeMat = new THREE.MeshBasicMaterial({ color: 0x020008 });
+            const plane = new THREE.Mesh(planeGeo, planeMat);
+            plane.rotation.x = -Math.PI / 2;
+            plane.position.y = -0.1;
+            scene.add(plane);
+
+            // Spieler (Raumschiff)
+            createPlayer();
+
+            // Event Listeners
+            window.addEventListener('resize', onWindowResize, false);
+            document.addEventListener('mousemove', onMouseMove, false);
+            document.addEventListener('touchmove', onTouchMove, { passive: false });
+        }
+
+        function createPlayer() {
+            const geometry = new THREE.ConeGeometry(0.5, 1.5, 4);
+            // Glühendes Material (Emissive)
+            const material = new THREE.MeshStandardMaterial({ 
+                color: 0x00ffff, 
+                emissive: 0x0088aa,
+                emissiveIntensity: 0.8,
+                roughness: 0.1
+            });
+            player = new THREE.Mesh(geometry, material);
+            player.rotation.x = -Math.PI / 2; // Liegend
+            player.rotation.y = Math.PI / 4; // Spitze nach vorne
+            player.position.y = 0.75;
+            player.position.z = 2;
+            
+            // Antriebs-Licht
+            const engineLight = new THREE.PointLight(0x00ffff, 2, 5);
+            engineLight.position.set(0, -0.5, 0.5);
+            player.add(engineLight);
+
+            scene.add(player);
+        }
+
+        function createObstacle() {
+            const width = Math.random() * 1.5 + 0.5;
+            const height = Math.random() * 1 + 0.5;
+            const geometry = new THREE.BoxGeometry(width, height, 1);
+            
+            // Neon Pink Material
+            const material = new THREE.MeshStandardMaterial({ 
+                color: 0xff00ff, 
+                emissive: 0xaa00aa,
+                emissiveIntensity: 0.6,
+                wireframe: false 
+            });
+            
+            // Wireframe Overlay für den "Tron"-Look
+            const edges = new THREE.EdgesGeometry(geometry);
+            const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
+
+            const obstacle = new THREE.Mesh(geometry, material);
+            obstacle.add(line);
+
+            // Zufällige X Position
+            obstacle.position.x = (Math.random() - 0.5) * 10;
+            obstacle.position.y = height / 2;
+            obstacle.position.z = -50; // Start in der Ferne
+
+            obstacles.push(obstacle);
+            scene.add(obstacle);
+        }
+
+        function createExplosion(position) {
+            const particleCount = 20;
+            const geometry = new THREE.BufferGeometry();
+            const vertices = [];
+            const velocities = [];
+
+            for (let i = 0; i < particleCount; i++) {
+                vertices.push(position.x, position.y, position.z);
+                velocities.push(
+                    (Math.random() - 0.5) * 0.5,
+                    (Math.random() - 0.5) * 0.5,
+                    (Math.random() - 0.5) * 0.5
+                );
+            }
+
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            
+            const material = new THREE.PointsMaterial({ color: 0x00ffff, size: 0.2 });
+            const particleSystem = new THREE.Points(geometry, material);
+            
+            particleSystem.userData = { velocities: velocities, life: 1.0 };
+            particles.push(particleSystem);
+            scene.add(particleSystem);
+        }
+
+        // --- Input Handling ---
+        let targetX = 0;
+
+        function onMouseMove(event) {
+            if (!isGameRunning) return;
+            // Normalisierte Mausposition (-1 bis 1) auf Spielbreite mappen
+            const x = (event.clientX / window.innerWidth) * 2 - 1;
+            targetX = x * MAX_X;
+        }
+
+        function onTouchMove(event) {
+            if (!isGameRunning) return;
+            event.preventDefault(); // Scroll verhindern
+            const x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
+            targetX = x * MAX_X;
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // --- Game Logic ---
+        function startGame() {
+            isGameRunning = true;
+            score = 0;
+            speed = 0.4;
+            targetX = 0;
+            
+            // Reset Arrays
+            obstacles.forEach(o => scene.remove(o));
+            obstacles = [];
+            particles.forEach(p => scene.remove(p));
+            particles = [];
+
+            // Reset Player
+            player.position.x = 0;
+            player.visible = true;
+
+            // UI Updates
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('game-over-screen').classList.add('hidden');
+            document.getElementById('hud').classList.remove('hidden');
+            
+            playSound('start');
+            animate();
+        }
+
+        function gameOver() {
+            isGameRunning = false;
+            cancelAnimationFrame(frameId);
+            
+            playSound('crash');
+            createExplosion(player.position);
+            player.visible = false;
+            
+            // Letzter Render-Call für die Explosion
+            renderer.render(scene, camera);
+
+            // UI Updates
+            document.getElementById('hud').classList.add('hidden');
+            document.getElementById('game-over-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = Math.floor(score);
+        }
+
+        function update() {
+            // 1. Spieler Bewegung (Lerp für Weichheit)
+            player.position.x += (targetX - player.position.x) * 0.1;
+            
+            // Neigungseffekt beim Bewegen
+            player.rotation.z = (player.position.x - targetX) * 0.5;
+
+            // 2. Bodenbewegung (Fake Speed)
+            floorGrid.position.z += speed;
+            if (floorGrid.position.z > 0) floorGrid.position.z = -50;
+
+            // 3. Hindernisse spawnen
+            if (Math.random() < 0.02 + (score * 0.0001)) {
+                createObstacle();
+            }
+
+            // 4. Hindernisse updaten
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                const obs = obstacles[i];
+                obs.position.z += speed;
+
+                // Kollision
+                const playerBox = new THREE.Box3().setFromObject(player);
+                // Box etwas verkleinern für faire Kollision
+                playerBox.min.x += 0.2; playerBox.max.x -= 0.2;
+                
+                const obsBox = new THREE.Box3().setFromObject(obs);
+
+                if (playerBox.intersectsBox(obsBox)) {
+                    gameOver();
+                    return;
+                }
+
+                // Entfernen wenn hinter Kamera
+                if (obs.position.z > camera.position.z) {
+                    scene.remove(obs);
+                    obstacles.splice(i, 1);
+                    score += 10;
+                    playSound('score');
+                }
+            }
+
+            // 5. Partikel Update
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                const positions = p.geometry.attributes.position.array;
+                const vels = p.userData.velocities;
+                
+                for(let j = 0; j < positions.length; j += 3) {
+                    positions[j] += vels[j];
+                    positions[j+1] += vels[j+1];
+                    positions[j+2] += vels[j+2];
+                }
+                p.geometry.attributes.position.needsUpdate = true;
+                p.userData.life -= 0.02;
+                p.material.opacity = p.userData.life;
+                
+                if(p.userData.life <= 0) {
+                    scene.remove(p);
+                    particles.splice(i, 1);
+                }
+            }
+
+            // 6. Schwierigkeit erhöhen
+            speed += 0.0001;
+            score += speed;
+
+            // UI Update
+            document.getElementById('score').innerText = Math.floor(score);
+            document.getElementById('speed-display').innerText = Math.floor(speed * 200) + '%';
+        }
+
+        function animate() {
+            if (!isGameRunning) return;
+            
+            frameId = requestAnimationFrame(animate);
+            update();
+            renderer.render(scene, camera);
+        }
+
+        // Init App
+        init();
+
+        // Button Listener
+        document.getElementById('start-btn').addEventListener('click', startGame);
+        document.getElementById('restart-btn').addEventListener('click', startGame);
+
+        // Einmaliges Rendern vor Start
+        renderer.render(scene, camera);
+
+    </script>
+</body>
+</html>
