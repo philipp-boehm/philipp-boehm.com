@@ -37,5 +37,5 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         port: 22
         source: "dist/*"
-        target: "www/portfolio"    # <--- Absoluter Pfad vom Root aus
-        strip_components: 1         # Entfernt 'dist' Wrapper
+        target: "www/portfolio"
+        strip_components: 1
