@@ -35,7 +35,6 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        protocol: sftp              # GEÄNDERT: sftp statt ftps
-        port: 22                    # NEU: Standard Port für SFTP
+        protocol: ftps              # GEÄNDERT: sftp statt ftps
         local-dir: ./dist/          # HINWEIS: Existiert erst, wenn Astro/Vite gebaut hat
         server-dir: /www/portfolio/  # GEÄNDERT: Angepasst an deine IONOS-Struktur
