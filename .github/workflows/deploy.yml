@@ -1,0 +1,41 @@
+name: Deploy Portfolio
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Code aus dem Repo holen
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # 2. Node.js Umgebung aufsetzen
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    # 3. Abhängigkeiten installieren & Seite bauen
+    - name: Install & Build
+      run: |
+        npm ci
+        npm run build
+      # Das Ergebnis liegt nun standardmäßig im Ordner 'dist/'
+
+    # 4. Upload per SFTP
+    - name: SFTP Deploy
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        protocol: sftp              # GEÄNDERT: sftp statt ftps
+        port: 22                    # NEU: Standard Port für SFTP
+        local-dir: ./dist/          # HINWEIS: Existiert erst, wenn Astro/Vite gebaut hat
+        server-dir: /www/portfolio/  # GEÄNDERT: Angepasst an deine IONOS-Struktur
