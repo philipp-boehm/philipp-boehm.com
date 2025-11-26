@@ -1,11 +1,89 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Dein Name | Software Engineer">
+	<main class="max-w-3xl mx-auto px-6 py-24 md:py-32">
+		
+		<section class="mb-24 fade-in">
+			<span class="inline-block py-1 px-3 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-semibold tracking-wide text-slate-600 dark:text-slate-400 mb-6">
+				Verfügbar für Projekte
+			</span>
+			<h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
+				Software Engineer & <br />
+				<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
+					Architekt.
+				</span>
+			</h1>
+			<p class="text-xl text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl">
+				Ich entwickle skalierbare Webanwendungen und digitale Ökosysteme. 
+				Fokus auf Performance, Clean Code und intuitive Nutzererfahrung.
+			</p>
+		</section>
+
+		<section class="mb-24">
+			<h2 class="text-sm font-bold uppercase tracking-widest text-slate-500 mb-8">Technologie-Stack</h2>
+			<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+				{["Java", "Python", "TypeScript", "Astro", "Laravel", "SQL", "Docker", "Git"].map((tech) => (
+					<div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 hover:border-blue-500/50 transition-colors text-center font-medium text-sm">
+						{tech}
+					</div>
+				))}
+			</div>
+		</section>
+
+		<section class="mb-24">
+			<div class="flex justify-between items-baseline mb-12">
+				<h2 class="text-3xl font-bold tracking-tight">Ausgewählte Projekte</h2>
+				<a href="https://github.com/pbhm215" target="_blank" class="text-blue-600 hover:text-blue-500 text-sm font-medium transition-colors">GitHub Profil &rarr;</a>
+			</div>
+
+			<div class="space-y-12">
+				<div class="group relative block overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all hover:shadow-xl hover:scale-[1.01]">
+					<div class="p-8">
+						<div class="flex justify-between items-start mb-4">
+							<h3 class="text-xl font-bold">Portfolio V1</h3>
+							<span class="text-xs font-mono text-slate-500">2025</span>
+						</div>
+						<p class="text-slate-600 dark:text-slate-400 mb-6">
+							Ein hochperformantes, statisches Portfolio basierend auf Astro und Tailwind CSS. 
+							Automatisiertes Deployment via GitHub Actions und SSH auf IONOS Webspace.
+						</p>
+						<div class="flex gap-2">
+							<span class="px-2 py-1 bg-white dark:bg-slate-800 rounded text-xs border border-slate-200 dark:border-slate-700">Astro</span>
+							<span class="px-2 py-1 bg-white dark:bg-slate-800 rounded text-xs border border-slate-200 dark:border-slate-700">CI/CD</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="group relative block overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 opacity-75">
+					<div class="p-8">
+						<div class="flex justify-between items-start mb-4">
+							<h3 class="text-xl font-bold">Personal Dashboard</h3>
+							<span class="text-xs font-mono text-orange-500">In Entwicklung</span>
+						</div>
+						<p class="text-slate-600 dark:text-slate-400 mb-6">
+							Eine private Verwaltungszentrale für Notizen, Medien und Finanzen. 
+							Geschützter Login-Bereich mit strikter Trennung von Frontend und Backend.
+						</p>
+						<div class="flex gap-2">
+							<span class="px-2 py-1 bg-white dark:bg-slate-800 rounded text-xs border border-slate-200 dark:border-slate-700">Laravel</span>
+							<span class="px-2 py-1 bg-white dark:bg-slate-800 rounded text-xs border border-slate-200 dark:border-slate-700">MySQL</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<footer class="pt-12 border-t border-slate-200 dark:border-slate-800 text-center md:text-left">
+			<div class="flex flex-col md:flex-row justify-between text-slate-500 text-sm">
+				<p>&copy; {new Date().getFullYear()} Philipp Böhm. All rights reserved.</p>
+				<div class="flex gap-6 mt-4 md:mt-0">
+					<a href="#" class="hover:text-slate-900 dark:hover:text-white transition-colors">Impressum</a>
+					<a href="#" class="hover:text-slate-900 dark:hover:text-white transition-colors">Datenschutz</a>
+				</div>
+			</div>
+		</footer>
+
+	</main>
 </Layout>

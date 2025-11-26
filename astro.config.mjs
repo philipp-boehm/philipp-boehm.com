@@ -1,7 +1,13 @@
-// @ts-check
+// astro.config.mjs
 import { defineConfig } from 'astro/config';
+import tailwind from '@astrojs/tailwind';
 
-// https://astro.build/config
 export default defineConfig({
-  site: 'https://philipp-boehm.com',
+  site: 'https://philipp-boehm.com', // Deine Domain
+  integrations: [
+    tailwind({
+      // Wichtig: Wendet Styles automatisch auf alle Seiten an
+      applyBaseStyles: true, 
+    }),
+  ],
 });
