@@ -28,13 +28,14 @@ jobs:
         npm run build
       # Das Ergebnis liegt nun standardmäßig im Ordner 'dist/'
 
-    # 4. Upload per SFTP
-    - name: SFTP Deploy
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+    # 4. Upload per SCP/SFTP (Port 22 - Funktioniert mit IONOS)
+    - name: Deploy to IONOS
+      uses: appleboy/scp-action@v0.1.7
       with:
-        server: ${{ secrets.FTP_SERVER }}
+        host: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        protocol: ftps              # GEÄNDERT: sftp statt ftps
-        local-dir: ./dist/          # HINWEIS: Existiert erst, wenn Astro/Vite gebaut hat
-        server-dir: /www/portfolio/  # GEÄNDERT: Angepasst an deine IONOS-Struktur
+        port: 22                    # Sicherer SSH Port
+        source: "dist/*"            # Nimm alles aus dem dist-Ordner
+        target: "/www/portfolio"    # Zielordner auf dem Server
+        strip_components: 1         # WICHTIG: Entfernt den Ordnernamen "dist" beim Upload
