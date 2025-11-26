@@ -28,14 +28,14 @@ jobs:
         npm run build
       # Das Ergebnis liegt nun standardmäßig im Ordner 'dist/'
 
-    # 4. Upload per reinem SFTP (Keine Shell-Befehle nötig)
-    - name: Deploy via SCP/SSH
-      uses: appleboy/scp-action@v0.1.7
+    # 4. Upload per FTPS (SamKirkland)
+    - name: FTP Deploy
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
-        host: ${{ secrets.FTP_SERVER }}
+        server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        port: 22
-        source: "dist/*"
-        target: "/www/portfolio"
-        strip_components: 1
+        protocol: ftps              # Nutzt FTP über SSL (Port 21)
+        local-dir: ./dist/          # Dein gebautes Astro-Projekt
+        server-dir: ./              # WICHTIG: Einfach ins Wurzelverzeichnis des Users legen
+        dangerously-force-sftp: false
