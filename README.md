@@ -1,8 +1,9 @@
 # Personal Portfolio (Frontend)
 
-Dies ist der öffentliche Frontend-Teil des **Personal Ecosystems**. Es handelt sich um eine statische, hochperformante Webseite, die als digitale Visitenkarte und Einstiegspunkt dient.
+Dies ist der öffentliche Frontend-Teil des **Personal Ecosystems**.  Es handelt sich um eine statische, hochperformante Webseite, die als digitale Visitenkarte und Einstiegspunkt dient.
 
-> **Projekt-Kontext:** Dieses Repository ist das Frontend. Das zugehörige Backend finden Sie unter:
+> **Projekt-Kontext:**  
+> Dieses Repository ist das Frontend. Das zugehörige Backend finden Sie unter:
 > **[Personal Dashboard (Backend)](https://github.com/pbhm215/dashboard)**
 
 **Live URL:** [philipp-boehm.com](https://philipp-boehm.com)
@@ -107,5 +108,5 @@ Das Deployment erfolgt vollautomatisch via **GitHub Actions**.
 
 ---
 
-**Autor:** Philipp Böhm
+**Autor:** Philipp Böhm  
 **Stand:** 2026
