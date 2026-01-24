@@ -1,6 +1,7 @@
 # Personal Portfolio (Frontend)
 
-Dies ist der öffentliche Frontend-Teil des **Personal Ecosystems**.  Es handelt sich um eine statische, hochperformante Webseite, die als digitale Visitenkarte und Einstiegspunkt dient.
+Dies ist der öffentliche Frontend-Teil des **Personal Ecosystems**.  
+Es handelt sich um eine statische, hochperformante Webseite, die als digitale Visitenkarte und Einstiegspunkt dient.
 
 > **Projekt-Kontext:**  
 > Dieses Repository ist das Frontend. Das zugehörige Backend finden Sie unter:
