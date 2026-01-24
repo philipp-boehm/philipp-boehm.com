@@ -4,7 +4,7 @@ Dies ist der öffentliche Frontend-Teil des "Personal Ecosystems". Es handelt si
 
 **Live URL:** [philipp-boehm.com](https://philipp-boehm.com)
 
-## 🏗 Systemarchitektur
+## Systemarchitektur
 
 Das Portfolio ist **Projekt A** in einer Zwei-Komponenten-Architektur:
 1.  **Portfolio (Dieses Repo):** Public Static Site (Astro).
@@ -12,7 +12,7 @@ Das Portfolio ist **Projekt A** in einer Zwei-Komponenten-Architektur:
 
 Die Verbindung erfolgt über den "Privat"-Button im Header (`src/components/Header.astro`), der auf die Subdomain `personal.philipp-boehm.com` verweist.
 
-## ⚡ Tech Stack
+## Tech Stack
 
 - **Framework:** [Astro](https://astro.build) (Static Site Generator)
 - **Styling:** [Tailwind CSS](https://tailwindcss.com)
@@ -20,7 +20,7 @@ Die Verbindung erfolgt über den "Privat"-Button im Header (`src/components/Head
 - **Hosting:** IONOS Webspace (Static Hosting)
 - **Deployment:** GitHub Actions (via SSH/Rsync)
 
-## 📂 Verzeichnisstruktur
+## Verzeichnisstruktur
 
 Die wichtigsten Orte für die Weiterentwicklung:
 
@@ -44,7 +44,7 @@ portfolio/
 └── tailwind.config.mjs     # Tailwind Konfiguration (Farben, Fonts)
 ```
 
-## 🚀 Entwicklung (Lokal)
+## Entwicklung (Lokal)
 
 Voraussetzung: Node.js installiert.
 
@@ -65,7 +65,7 @@ Voraussetzung: Node.js installiert.
     npm run preview
     ```
 
-## 🛠 Konfiguration & Anpassung
+## Konfiguration & Anpassung
 
 ### 1. Link zum Dashboard ändern
 Sollte sich die URL des Dashboards ändern, muss der Link im Header angepasst werden:
@@ -81,7 +81,7 @@ Das Projekt nutzt ein einheitliches Favicon-Set (generiert via RealFaviconGenera
 * Standardmäßig ist die Seite indexierbar.
 * Die `Layout.astro` akzeptiert eine Prop `noIndex={true}`, um spezifische Seiten (z.B. Impressum) aus dem Index zu halten.
 
-## 📦 Deployment
+## Deployment
 
 Das Deployment erfolgt vollautomatisch via **GitHub Actions**.
 
