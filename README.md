@@ -5,7 +5,7 @@ Es handelt sich um eine statisches, hochperformantes Portfolio, das als digitale
 
 > **Projekt-Kontext:**  
 > Dieses Repository ist das Frontend. Das zugehörige Backend finden Sie unter:
-> **[Personal Dashboard (Backend)](https://github.com/philipp-boehm/dashboard)**
+> **[Personal Dashboard (Backend)](https://github.com/philipp-boehm/personal.philipp-boehm.com)**
 
 **Live URL:** [philipp-boehm.com](https://philipp-boehm.com)
 
