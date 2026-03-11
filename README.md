@@ -41,7 +41,7 @@ Die Verbindung erfolgt über den "Privat"-Button im Header (`src/components/Head
 Die wichtigsten Orte für die Weiterentwicklung:
 
 ```text
-portfolio/
+philipp-boehm.com/
 ├── public/                 # Statische Assets
 │   ├── favicon.svg         # Vektor-Logo (Wichtig für Branding)
 │   ├── robots.txt          # SEO Konfiguration
