@@ -1,7 +1,7 @@
-# Personal Portfolio (Frontend)
+# philipp-boehm.com
 
 Dies ist der öffentliche Frontend-Teil des **Personal Ecosystems**.  
-Es handelt sich um eine statische, hochperformante Webseite, die als digitale Visitenkarte und Einstiegspunkt dient.
+Es handelt sich um eine statisches, hochperformantes Portfolio, das als digitale Visitenkarte und Einstiegspunkt dient.
 
 > **Projekt-Kontext:**  
 > Dieses Repository ist das Frontend. Das zugehörige Backend finden Sie unter:
@@ -23,8 +23,8 @@ Es handelt sich um eine statische, hochperformante Webseite, die als digitale Vi
 ## Systemarchitektur
 
 Das Portfolio ist **Projekt A** in einer Zwei-Komponenten-Architektur:
-1.  **Portfolio (Dieses Repo):** Public Static Site (Astro).
-2.  **Dashboard (Anderes Repo):** Private Backend Hub (Laravel).
+1.  **Portfolio (philipp-boehm.com):** Public Static Site (Astro).
+2.  **Dashboard (personal.philipp-boehm.com):** Private Backend Hub (Laravel).
 
 Die Verbindung erfolgt über den "Privat"-Button im Header (`src/components/Header.astro`), der auf die Subdomain `personal.philipp-boehm.com` verweist.
 
