@@ -1,113 +1,57 @@
 # philipp-boehm.com
 
-Dies ist der öffentliche Frontend-Teil des **Personal Ecosystems**.  
-Es handelt sich um eine statisches, hochperformantes Portfolio, das als digitale Visitenkarte und Einstiegspunkt dient.
+Dies ist der öffentliche Frontend-Teil des **Personal Ecosystems**.
+Es handelt sich um ein statisches One-Page-Portfolio ohne externe Abhängigkeiten.
 
-> **Projekt-Kontext:**  
-> Dieses Repository ist das Frontend. Das zugehörige Backend finden Sie unter:
+> **Projekt-Kontext:**
+> Dieses Repository ist das Frontend. Das zugehörige Backend liegt unter:
 > **[Personal Dashboard (Backend)](https://github.com/philipp-boehm/personal.philipp-boehm.com)**
 
 **Live URL:** [philipp-boehm.com](https://philipp-boehm.com)
 
-## Inhaltsverzeichnis
-- [Systemarchitektur](#systemarchitektur)
-- [Tech Stack](#tech-stack)
-- [Verzeichnisstruktur](#verzeichnisstruktur)
-- [Entwicklung (Lokal)](#entwicklung-lokal)
-- [Konfiguration & Anpassung](#konfiguration--anpassung)
-  - [1. Link zum Dashboard ändern](#1-link-zum-dashboard-ändern)
-  - [2. Branding & Favicons](#2-branding--favicons)
-  - [3. SEO & Robots](#3-seo--robots)
-- [Deployment](#deployment)
+## Systemarchitektur & Tech Stack
 
-## Systemarchitektur
+Das Projekt wurde auf maximale Langlebigkeit und Wartungsarmut optimiert (Zero-Dependency-Architektur). Build-Prozesse, Paketmanager (NPM) und Frameworks (Astro, Tailwind) entfallen vollständig.
 
-Das Portfolio ist **Projekt A** in einer Zwei-Komponenten-Architektur:
-1.  **Portfolio (philipp-boehm.com):** Public Static Site (Astro).
-2.  **Dashboard (personal.philipp-boehm.com):** Private Backend Hub (Laravel).
-
-Die Verbindung erfolgt über den "Privat"-Button im Header (`src/components/Header.astro`), der auf die Subdomain `personal.philipp-boehm.com` verweist.
-
-## Tech Stack
-
-- **Framework:** [Astro](https://astro.build) (Static Site Generator)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com)
-- **Sprache:** TypeScript / HTML / CSS
-- **Hosting:** IONOS Webspace (Static Hosting)
-- **Deployment:** GitHub Actions (via SSH/Rsync)
+* **Frontend:** HTML5, CSS3 (Vanilla)
+* **Architektur:** Single-File-Ansatz pro Route (CSS ist nativ im `<head>` eingebettet)
+* **Hosting:** IONOS Webspace
+* **Deployment:** GitHub Actions (via SCP)
 
 ## Verzeichnisstruktur
 
-Die wichtigsten Orte für die Weiterentwicklung:
-
 ```text
-philipp-boehm.com/
-├── public/                 # Statische Assets
-│   ├── favicon.svg         # Vektor-Logo (Wichtig für Branding)
-│   ├── robots.txt          # SEO Konfiguration
-│   └── ...                 # RealFaviconGenerator Dateien
-├── src/
-│   ├── components/
-│   │   └── Header.astro    # Enthält Logo & "Privat"-Link zum Dashboard
-│   ├── layouts/
-│   │   └── Layout.astro    # Globales HTML-Gerüst (<head>, SEO, Favicons)
-│   ├── pages/
-│   │   ├── index.astro     # Die Startseite (Landing Page Content)
-│   │   └── impressum.astro # Rechtliche Seiten
-│   └── styles/
-│       └── global.css      # Globale Tailwind Direktiven & Font-Settings
-├── astro.config.mjs        # Astro Konfiguration
-└── tailwind.config.mjs     # Tailwind Konfiguration (Farben, Fonts)
-```
+[philipp-boehm.com/](https://philipp-boehm.com/)
+├── .github/workflows/
+│   └── deploy.yml       # CI/CD Pipeline
+├── index.html           # Startseite inkl. Styling & Content
+├── impressum.html       # Rechtliche Seite
+├── favicon.svg          # Vektor-Logo (Master)
+├── favicon.ico          # Fallback Favicon
+└── apple-touch-icon.png # iOS Homescreen Icon
 
 ## Entwicklung (Lokal)
 
-Voraussetzung: Node.js installiert.
+1. Repository klonen.
+2. `index.html` direkt in einem Webbrowser öffnen.
+3. Alternativ eine lokale Live-Server-Erweiterung (z. B. in VS Code) nutzen.
 
-1.  **Abhängigkeiten installieren:**
-    ```bash
-    npm install
-    ```
+Es sind keine Installationen (`npm install`) oder Build-Schritte (`npm run build`) erforderlich.
 
-2.  **Dev-Server starten:**
-    ```bash
-    npm run dev
-    ```
-    Der Server läuft meist unter `http://localhost:4321`.
+## Sicherheits- und Entwicklungsrichtlinien
 
-3.  **Build testen (Produktions-Vorschau):**
-    ```bash
-    npm run build
-    npm run preview
-    ```
+Da das Projekt ohne abstrahierende Frameworks arbeitet, sind bei der Weiterentwicklung folgende Regeln zwingend einzuhalten:
 
-## Konfiguration & Anpassung
-
-### 1. Link zum Dashboard ändern
-Sollte sich die URL des Dashboards ändern, muss der Link im Header angepasst werden:
-* **Datei:** `src/components/Header.astro`
-* Suche nach dem `<a>` Tag mit dem Schloss-Icon.
-
-### 2. Branding & Favicons
-Das Projekt nutzt ein einheitliches Favicon-Set (generiert via RealFaviconGenerator).
-* **Source:** `public/favicon.svg` (Das Master-Logo).
-* **Implementierung:** `<head>` Bereich in `src/layouts/Layout.astro`.
-
-### 3. SEO & Robots
-* Standardmäßig ist die Seite indexierbar.
-* Die `Layout.astro` akzeptiert eine Prop `noIndex={true}`, um spezifische Seiten (z.B. Impressum) aus dem Index zu halten.
+1. **Strikte Zero-Dependency-Regel:** Es dürfen keine externen Skripte, Stylesheets oder Fonts über externe CDNs (Content Delivery Networks) eingebunden werden.
+2. **XSS-Prävention:** Falls zukünftig Vanilla JavaScript hinzugefügt wird, dürfen dynamische Inhalte niemals ungeprüft ins DOM (z. B. via `innerHTML`) injiziert werden. Stattdessen ist `textContent` zu verwenden.
+3. **Kontext-Maximierung (KI-Fokus):** CSS und JavaScript sind direkt in die jeweilige HTML-Datei zu schreiben. Die Aufteilung in separate `.css`- oder `.js`-Dateien ist untersagt, um den Kontext für KI-Code-Generatoren in einer einzigen Datei zu halten.
+4. **Deployment-Filterung:** Dateien wie `.git`, `.github` oder `README.md` werden durch die CI/CD-Pipeline automatisch vor dem Upload entfernt und dürfen nicht manuell auf den Server kopiert werden.
 
 ## Deployment
 
-Das Deployment erfolgt vollautomatisch via **GitHub Actions**.
-
-* **Trigger:** Push auf `main`.
-* **Prozess:**
-    1.  Astro baut die Seite (`npm run build`) in den Ordner `dist/`.
-    2.  Der Inhalt von `dist/` wird per `rsync` auf den IONOS Server übertragen.
-* **Secrets:** Benötigt `SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY` in den GitHub Repository Settings.
+Der Upload erfolgt vollautomatisch via GitHub Actions bei jedem Push auf den `main`-Branch.
+Die Pipeline nutzt SCP (Secure Copy), um die Dateien sicher auf den IONOS-Server (`www/philipp-boehm.com`) zu übertragen.
 
 ---
-
 **Autor:** Philipp Böhm  
 **Stand:** 2026
