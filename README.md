@@ -29,6 +29,7 @@ Das Projekt wurde auf maximale Langlebigkeit und Wartungsarmut optimiert (Zero-D
 ├── favicon.svg          # Vektor-Logo (Master)
 ├── favicon.ico          # Fallback Favicon
 └── apple-touch-icon.png # iOS Homescreen Icon
+```
 
 ## Entwicklung (Lokal)
 
