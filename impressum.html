@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Impressum | Philipp Böhm</title>
+    
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border-color: #e2e8f0;
+            --header-bg: rgba(255, 255, 255, 0.8);
+            --blue-link: #2563eb;
+            --blue-hover: #3b82f6;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #0a0a0a;
+                --text-main: #ffffff;
+                --text-muted: #94a3b8;
+                --border-color: #1e293b;
+                --header-bg: rgba(10, 10, 10, 0.8);
+                --blue-link: #60a5fa;
+                --blue-hover: #93c5fd;
+            }
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        html { 
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; color: var(--blue-link); transition: color 0.2s; }
+        a:hover { color: var(--blue-hover); text-decoration: underline; }
+
+        /* Header (Identisch zur Startseite) */
+        header { position: fixed; top: 0; width: 100%; background: var(--header-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); }
+        .header-content { max-width: 48rem; margin: 0 auto; padding: 0 1.5rem; height: 4rem; display: flex; align-items: center; justify-content: space-between; }
+        .logo img { height: 2rem; width: 2rem; }
+
+        /* Content */
+        main { max-width: 48rem; margin: 0 auto; padding: 6rem 1.5rem; }
+        @media (min-width: 768px) { main { padding: 8rem 1.5rem; } }
+        
+        h1 { font-size: 1.875rem; font-weight: 700; margin-bottom: 3rem; }
+        section { margin-bottom: 2rem; }
+        h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; }
+        p { margin-bottom: 1rem; }
+
+        .legal-footer { margin-top: 3rem; padding-top: 3rem; border-top: 1px solid var(--border-color); font-size: 0.875rem; color: var(--text-muted); }
+        .legal-footer h3 { font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main); }
+        .back-link { display: inline-block; margin-top: 2rem; font-weight: 500; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <img src="favicon.svg" alt="Logo">
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <h1>Impressum</h1>
+
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+            <section>
+                <h2>Angaben gemäß § 5 TMG</h2>
+                <p>Philipp Böhm<br>Schwarzhornstraße 2<br>73560 Böbingen an der Rems</p>
+            </section>
+
+            <section>
+                <h2>Kontakt</h2>
+                <p>E-Mail: <a href="mailto:mail@philipp-boehm.com">mail@philipp-boehm.com</a></p>
+            </section>
+
+            <section>
+                <h2>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h2>
+                <p>Philipp Böhm<br>Schwarzhornstraße 2<br>73560 Böbingen an der Rems</p>
+            </section>
+        </div>
+
+        <section class="legal-footer">
+            <h3>Haftung für Inhalte</h3>
+            <p>Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.</p>
+            
+            <h3>Haftung für Links</h3>
+            <p>Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.</p>
+
+            <h3>Urheberrecht</h3>
+            <p>Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.</p>
+        </section>
+
+        <a href="index.html" class="back-link">&larr; Zurück zur Startseite</a>
+    </main>
+
+</body>
+</html>
