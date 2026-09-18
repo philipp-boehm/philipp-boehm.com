@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Portfolio und digitales Zuhause von Philipp Böhm">
+    <meta name="description" content="Portfolio von Philipp Böhm">
     <title>Philipp Böhm | Software Engineer</title>
     
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -99,15 +99,14 @@
         .hero-desc { font-size: 1.25rem; color: var(--text-muted); max-width: 36rem; }
 
         /* Tech Stack */
-        .section-title-small { font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 2rem; }
-        .tech-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-        @media (min-width: 768px) { .tech-grid { grid-template-columns: repeat(4, 1fr); } }
-        .tech-item {
-            padding: 1rem; border-radius: 0.75rem; border: 1px solid var(--border-color);
-            background: var(--card-bg); text-align: center; font-size: 0.875rem; font-weight: 500;
+        .section-title-small { font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 1.5rem; }
+        .skill-flex { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
+        .skill-tag {
+            padding: 0.375rem 0.75rem; border-radius: 0.5rem; border: 1px solid var(--border-color);
+            background: var(--card-bg); font-size: 0.875rem; font-weight: 500;
             transition: border-color 0.2s;
         }
-        .tech-item:hover { border-color: rgba(59, 130, 246, 0.5); }
+        .skill-tag:hover { border-color: rgba(59, 130, 246, 0.5); }
 
         /* Projects */
         .projects-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 3rem; }
@@ -144,10 +143,12 @@
         .card-opacity { opacity: 0.75; }
 
         /* Footer */
-        footer { padding-top: 3rem; border-top: 1px solid var(--border-color); font-size: 0.875rem; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+        footer { 
+            padding-top: 3rem; border-top: 1px solid var(--border-color); 
+            font-size: 0.875rem; color: var(--text-muted); 
+            display: flex; flex-direction: column; align-items: center; gap: 0.5rem; 
+        }
         @media (min-width: 768px) { footer { flex-direction: row; justify-content: space-between; } }
-        .footer-links { display: flex; gap: 1.5rem; }
-        .footer-links a:hover { color: var(--text-main); }
     </style>
 </head>
 <body>
@@ -174,22 +175,69 @@
                 <span class="text-gradient">Architekt.</span>
             </h1>
             <p class="hero-desc">
-                Ich entwickle skalierbare Webanwendungen und digitale Ökosysteme. 
-                Fokus auf Performance, Clean Code und intuitive Nutzererfahrung.
+                Entwicklung von Softwarelösungen, Webanwendungen und Systemarchitekturen. 
+                Fokus auf Performance, Clean Code und Skalierbarkeit.
             </p>
         </section>
 
         <section>
-            <h2 class="section-title-small">Technologie-Stack</h2>
-            <div class="tech-grid">
-                <div class="tech-item">Java</div>
-                <div class="tech-item">Python</div>
-                <div class="tech-item">TypeScript</div>
-                <div class="tech-item">HTML/CSS</div>
-                <div class="tech-item">PHP</div>
-                <div class="tech-item">SQL</div>
-                <div class="tech-item">Docker</div>
-                <div class="tech-item">Git</div>
+            <h2 class="section-title-small">Programmiersprachen</h2>
+            <div class="skill-flex">
+                <div class="skill-tag">C</div>
+                <div class="skill-tag">C++</div>
+                <div class="skill-tag">C#</div>
+                <div class="skill-tag">XAML</div>
+                <div class="skill-tag">Java</div>
+                <div class="skill-tag">Python</div>
+                <div class="skill-tag">SQL</div>
+                <div class="skill-tag">Swift</div>
+                <div class="skill-tag">Assembler</div>
+                <div class="skill-tag">GLSL</div>
+                <div class="skill-tag">HTML</div>
+                <div class="skill-tag">PHP</div>
+                <div class="skill-tag">CSS</div>
+                <div class="skill-tag">JavaScript</div>
+                <div class="skill-tag">TypeScript</div>
+                <div class="skill-tag">LaTeX</div>
+                <div class="skill-tag">Markdown</div>
+                <div class="skill-tag">YAML</div>
+                <div class="skill-tag">Bash</div>
+                <div class="skill-tag">PowerShell</div>
+                <div class="skill-tag">Lisp</div>
+                <div class="skill-tag">Scheme</div>
+                <div class="skill-tag">Racket</div>
+            </div>
+
+            <h2 class="section-title-small">Tools & Frameworks</h2>
+            <div class="skill-flex">
+                <div class="skill-tag">.NET</div>
+                <div class="skill-tag">Git</div>
+                <div class="skill-tag">GitHub</div>
+                <div class="skill-tag">AzureDevOps</div>
+                <div class="skill-tag">Docker</div>
+                <div class="skill-tag">Astro</div>
+                <div class="skill-tag">TailwindCSS</div>
+                <div class="skill-tag">Laravel</div>
+                <div class="skill-tag">Blade</div>
+                <div class="skill-tag">Alpine.js</div>
+                <div class="skill-tag">MySQL</div>
+                <div class="skill-tag">Node.js</div>
+                <div class="skill-tag">Next.js</div>
+                <div class="skill-tag">FastAPI</div>
+                <div class="skill-tag">Rest-API</div>
+                <div class="skill-tag">nginx</div>
+                <div class="skill-tag">JSON</div>
+                <div class="skill-tag">Redis</div>
+                <div class="skill-tag">Matlab</div>
+                <div class="skill-tag">Visual Studio</div>
+                <div class="skill-tag">Xamarin.Forms</div>
+                <div class="skill-tag">.NET MAUI</div>
+                <div class="skill-tag">WPF</div>
+                <div class="skill-tag">WinForms</div>
+                <div class="skill-tag">MQTT</div>
+                <div class="skill-tag">XSL</div>
+                <div class="skill-tag">Mendix</div>
+                <div class="skill-tag">Qt</div>
             </div>
         </section>
 
@@ -268,10 +316,7 @@
 
         <footer>
             <p>&copy; <script>document.write(new Date().getFullYear())</script> Philipp Böhm. All rights reserved.</p>
-            <div class="footer-links">
-                <a href="impressum.html">Impressum</a>
-                <a href="#">Datenschutz</a>
-            </div>
+            <p>Stand: Letzte Aktualisierung <script>document.write(new Date().toLocaleDateString('de-DE', { month: 'long', year: 'numeric' }))</script></p>
         </footer>
     </main>
 </body>

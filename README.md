@@ -25,7 +25,6 @@ Das Projekt wurde auf maximale Langlebigkeit und Wartungsarmut optimiert (Zero-D
 ├── .github/workflows/
 │   └── deploy.yml       # CI/CD Pipeline
 ├── index.html           # Startseite inkl. Styling & Content
-├── impressum.html       # Rechtliche Seite
 ├── favicon.svg          # Vektor-Logo (Master)
 ├── favicon.ico          # Fallback Favicon
 └── apple-touch-icon.png # iOS Homescreen Icon
