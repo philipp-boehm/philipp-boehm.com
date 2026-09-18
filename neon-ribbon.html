@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lichtband</title>
+    <style>
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #020204; overflow: hidden;
+            font-family: monospace; touch-action: none; user-select: none;
+        }
+        canvas { display: block; }
+        #ui {
+            position: absolute; top: 20px; left: 20px; color: #fff;
+            pointer-events: none; z-index: 10;
+        }
+        .hud { font-size: 20px; margin-bottom: 5px; opacity: 0.8; }
+        #game-over {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: #fff; text-align: center; display: none; pointer-events: none;
+        }
+        h1 { font-size: 40px; margin: 0 0 10px 0; color: #ff0055; text-shadow: 0 0 20px #ff0055; }
+    </style>
+</head>
+<body>
+    <div id="ui">
+        <div class="hud">Punkte: <span id="score">0</span></div>
+        <div class="hud">Länge: <span id="length">10</span></div>
+    </div>
+    <div id="game-over">
+        <h1>Kollision</h1>
+        <p>Tippen für Neustart</p>
+    </div>
+    <canvas id="game"></canvas>
+
+    <script>
+        const canvas = document.getElementById('game');
+        const ctx = canvas.getContext('2d', { alpha: false });
+        const scoreEl = document.getElementById('score');
+        const lengthEl = document.getElementById('length');
+        const gameOverEl = document.getElementById('game-over');
+        
+        let width, height;
+        let gameState = 0; // 0: Menü/Startklar, 1: Laufend, 2: Beendet
+        let score = 0;
+        let time = 0;
+        
+        // Vektormathematik & Hilfsfunktionen
+        const dist = (x1, y1, x2, y2) => Math.hypot(x2 - x1, y2 - y1);
+        const lerp = (a, b, t) => a + (b - a) * t;
+
+        // Entitäten
+        let pointer = { x: 0, y: 0 };
+        let tail = [];
+        let enemies = [];
+        let items = [];
+        let dust = [];
+        let shockwaves = [];
+        
+        const tailSegmentDist = 4;
+        const maxTailThickness = 12;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            if (gameState === 0) {
+                pointer.x = width / 2;
+                pointer.y = height / 2;
+            }
+        }
+        window.addEventListener('resize', resize);
+
+        function init() {
+            score = 0;
+            time = 0;
+            scoreEl.innerText = score;
+            tail = [];
+            for (let i = 0; i < 15; i++) {
+                tail.push({ x: width / 2, y: height / 2 });
+            }
+            lengthEl.innerText = tail.length;
+            enemies = [];
+            items = [];
+            dust = [];
+            shockwaves = [];
+            
+            for (let i = 0; i < 150; i++) {
+                dust.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: 0, vy: 0,
+                    size: Math.random() * 2 + 0.5
+                });
+            }
+            
+            spawnItem();
+            gameState = 1;
+            gameOverEl.style.display = 'none';
+        }
+
+        function spawnItem() {
+            items.push({
+                x: Math.random() * (width - 100) + 50,
+                y: Math.random() * (height - 100) + 50,
+                life: 0
+            });
+        }
+
+        function spawnEnemy() {
+            const side = Math.floor(Math.random() * 4);
+            let x, y;
+            if (side === 0) { x = Math.random() * width; y = -50; }
+            else if (side === 1) { x = width + 50; y = Math.random() * height; }
+            else if (side === 2) { x = Math.random() * width; y = height + 50; }
+            else { x = -50; y = Math.random() * height; }
+
+            enemies.push({ x, y, rot: 0, speed: Math.random() * 1.5 + 1.5 });
+        }
+
+        function createShockwave(x, y, color) {
+            shockwaves.push({ x, y, radius: 0, alpha: 1, color });
+        }
+
+        function updatePhysics() {
+            // Inverse Kinematik für das Lichtband
+            const head = tail[0];
+            head.x = lerp(head.x, pointer.x, 0.15);
+            head.y = lerp(head.y, pointer.y, 0.15);
+
+            for (let i = 1; i < tail.length; i++) {
+                const prev = tail[i - 1];
+                const curr = tail[i];
+                const dx = prev.x - curr.x;
+                const dy = prev.y - curr.y;
+                const d = Math.hypot(dx, dy);
+                if (d > tailSegmentDist) {
+                    curr.x = prev.x - (dx / d) * tailSegmentDist;
+                    curr.y = prev.y - (dy / d) * tailSegmentDist;
+                }
+            }
+
+            // Umgebungsstaub (Fluiddynamik-Illusion)
+            for (let d of dust) {
+                const hd = dist(head.x, head.y, d.x, d.y);
+                if (hd < 100) {
+                    const angle = Math.atan2(d.y - head.y, d.x - head.x);
+                    const force = (100 - hd) * 0.05;
+                    d.vx += Math.cos(angle) * force;
+                    d.vy += Math.sin(angle) * force;
+                }
+                d.x += d.vx;
+                d.y += d.vy;
+                d.vx *= 0.92;
+                d.vy *= 0.92;
+                
+                if (d.x < 0) d.x += width;
+                if (d.x > width) d.x -= width;
+                if (d.y < 0) d.y += height;
+                if (d.y > height) d.y -= height;
+            }
+
+            // Items
+            for (let i = items.length - 1; i >= 0; i--) {
+                const item = items[i];
+                item.life += 0.05;
+                if (dist(head.x, head.y, item.x, item.y) < 30) {
+                    score += 50;
+                    scoreEl.innerText = score;
+                    createShockwave(item.x, item.y, '#00ffff');
+                    
+                    // Band verlängern
+                    const last = tail[tail.length - 1];
+                    for (let k = 0; k < 10; k++) {
+                        tail.push({ x: last.x, y: last.y });
+                    }
+                    lengthEl.innerText = tail.length;
+                    
+                    items.splice(i, 1);
+                    spawnItem();
+                    if (Math.random() > 0.5) spawnEnemy();
+                }
+            }
+
+            // Feinde
+            if (Math.random() < 0.01 && enemies.length < 5 + score / 500) spawnEnemy();
+
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                const e = enemies[i];
+                const angle = Math.atan2(head.y - e.y, head.x - e.x);
+                e.x += Math.cos(angle) * e.speed;
+                e.y += Math.sin(angle) * e.speed;
+                e.rot += 0.05;
+
+                // Kollision mit Kopf (Game Over)
+                if (dist(head.x, head.y, e.x, e.y) < 15) {
+                    gameState = 2;
+                    gameOverEl.style.display = 'block';
+                    createShockwave(head.x, head.y, '#ff0055');
+                    return;
+                }
+
+                // Kollision mit Band (Abschneiden)
+                for (let j = 10; j < tail.length; j += 3) {
+                    if (dist(tail[j].x, tail[j].y, e.x, e.y) < 15) {
+                        createShockwave(e.x, e.y, '#ffaa00');
+                        tail = tail.slice(0, j);
+                        lengthEl.innerText = tail.length;
+                        enemies.splice(i, 1);
+                        break; // Ein Feind schneidet nur einmal pro Frame
+                    }
+                }
+            }
+        }
+
+        function drawRibbon(offset, color, widthMultiplier) {
+            if (tail.length < 2) return;
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            
+            // Rechte Seite berechnen
+            for (let i = 0; i < tail.length; i++) {
+                const t = tail[i];
+                let next = tail[i + 1] || t;
+                let dx = next.x - t.x;
+                let dy = next.y - t.y;
+                let len = Math.hypot(dx, dy) || 1;
+                let nx = -dy / len;
+                let ny = dx / len;
+                
+                const thickness = Math.max(0.5, (1 - i / tail.length) * maxTailThickness * widthMultiplier);
+                if (i === 0) ctx.moveTo(t.x + nx * thickness + offset.x, t.y + ny * thickness + offset.y);
+                else ctx.lineTo(t.x + nx * thickness + offset.x, t.y + ny * thickness + offset.y);
+            }
+            
+            // Linke Seite berechnen (Rücklauf)
+            for (let i = tail.length - 1; i >= 0; i--) {
+                const t = tail[i];
+                let next = tail[i + 1] || t;
+                let dx = next.x - t.x;
+                let dy = next.y - t.y;
+                let len = Math.hypot(dx, dy) || 1;
+                let nx = -dy / len;
+                let ny = dx / len;
+                
+                const thickness = Math.max(0.5, (1 - i / tail.length) * maxTailThickness * widthMultiplier);
+                ctx.lineTo(t.x - nx * thickness + offset.x, t.y - ny * thickness + offset.y);
+            }
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function render() {
+            // Bewegungsunschärfe
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.fillStyle = 'rgba(2, 2, 4, 0.25)';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.globalCompositeOperation = 'screen';
+
+            // Staub
+            ctx.fillStyle = 'rgba(100, 200, 255, 0.4)';
+            for (let d of dust) {
+                ctx.beginPath();
+                ctx.arc(d.x, d.y, d.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Items
+            for (let item of items) {
+                const r = 10 + Math.sin(item.life) * 3;
+                ctx.beginPath();
+                ctx.arc(item.x, item.y, r, 0, Math.PI * 2);
+                ctx.fillStyle = '#00ffff';
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = '#00ffff';
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+
+            // Feinde
+            ctx.strokeStyle = '#ff0055';
+            ctx.lineWidth = 2;
+            for (let e of enemies) {
+                ctx.save();
+                ctx.translate(e.x, e.y);
+                ctx.rotate(e.rot);
+                ctx.beginPath();
+                for (let i = 0; i < 5; i++) {
+                    const angle = (i * Math.PI * 2) / 5;
+                    const r = i % 2 === 0 ? 12 : 6;
+                    if (i === 0) ctx.moveTo(Math.cos(angle) * r, Math.sin(angle) * r);
+                    else ctx.lineTo(Math.cos(angle) * r, Math.sin(angle) * r);
+                }
+                ctx.closePath();
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // Lichtband mit chromatischer Aberration (Farbversatz)
+            if (gameState === 1 || gameState === 2) {
+                const hue = (time * 0.5) % 360;
+                
+                // Äußerer Glow
+                drawRibbon({x: 0, y: 0}, `hsla(${hue}, 100%, 50%, 0.3)`, 2.0);
+                
+                // Chromatischer Versatz
+                drawRibbon({x: -2, y: 0}, `rgba(0, 255, 255, 0.8)`, 1.0);
+                drawRibbon({x: 2, y: 0}, `rgba(255, 0, 100, 0.8)`, 1.0);
+                
+                // Weißer Kern
+                drawRibbon({x: 0, y: 0}, '#ffffff', 0.5);
+            }
+
+            // Schockwellen
+            for (let i = shockwaves.length - 1; i >= 0; i--) {
+                const sw = shockwaves[i];
+                sw.radius += 5;
+                sw.alpha -= 0.03;
+                if (sw.alpha <= 0) {
+                    shockwaves.splice(i, 1);
+                    continue;
+                }
+                ctx.beginPath();
+                ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
+                ctx.strokeStyle = sw.color;
+                ctx.globalAlpha = sw.alpha;
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        function loop() {
+            if (gameState === 1) {
+                updatePhysics();
+                score++;
+                if (score % 10 === 0) scoreEl.innerText = score;
+            }
+            render();
+            time++;
+            requestAnimationFrame(loop);
+        }
+
+        // Steuerung
+        const updatePointer = (e) => {
+            if (e.touches) {
+                pointer.x = e.touches[0].clientX;
+                pointer.y = e.touches[0].clientY;
+            } else {
+                pointer.x = e.clientX;
+                pointer.y = e.clientY;
+            }
+        };
+
+        const interact = (e) => {
+            e.preventDefault();
+            updatePointer(e);
+            if (gameState === 0 || gameState === 2) init();
+        };
+
+        window.addEventListener('pointermove', updatePointer);
+        window.addEventListener('pointerdown', interact);
+        
+        resize();
+        loop();
+    </script>
+</body>
+</html>
