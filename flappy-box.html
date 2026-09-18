@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Minispiel</title>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background-color: #111; 
+            color: #fff; 
+            font-family: sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            overflow: hidden; 
+            touch-action: none; /* Verhindert Scrollen beim Tippen */
+        }
+        canvas { 
+            background-color: #222; 
+            box-shadow: 0 0 15px rgba(255,255,255,0.1); 
+            border-radius: 5px;
+        }
+        #ui { 
+            position: absolute; 
+            top: 15%; 
+            text-align: center; 
+            pointer-events: none; 
+        }
+        h1 { margin: 0; font-size: 28px; color: #fff; }
+        p { margin-top: 10px; font-size: 16px; color: #aaa; }
+    </style>
+</head>
+<body>
+    <div id="ui">
+        <h1>Punkte: <span id="score">0</span></h1>
+        <p id="msg">Tippen zum Starten</p>
+    </div>
+    <canvas id="gameCanvas" width="320" height="480"></canvas>
+    
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const msgEl = document.getElementById('msg');
+        
+        let frames = 0;
+        let score = 0;
+        let gameState = 0; // 0: Start, 1: Spielen, 2: Game Over
+        
+        const player = {
+            x: 50, y: 240, width: 20, height: 20,
+            velocity: 0, gravity: 0.3, jump: -6,
+            draw() {
+                ctx.fillStyle = '#ffcc00';
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+            },
+            update() {
+                this.velocity += this.gravity;
+                this.y += this.velocity;
+                // Kollision Boden/Decke
+                if (this.y + this.height >= canvas.height || this.y < 0) {
+                    gameState = 2;
+                }
+            },
+            flap() { this.velocity = this.jump; }
+        };
+        
+        const obstacles = {
+            items: [],
+            width: 40, gap: 130, dx: 2.5,
+            draw() {
+                ctx.fillStyle = '#00ffcc';
+                for (let p of this.items) {
+                    ctx.fillRect(p.x, 0, this.width, p.top);
+                    ctx.fillRect(p.x, p.top + this.gap, this.width, canvas.height - p.top - this.gap);
+                }
+            },
+            update() {
+                if (frames % 90 === 0) {
+                    let min = 50;
+                    let max = canvas.height - this.gap - 50;
+                    let topHeight = Math.floor(Math.random() * (max - min + 1) + min);
+                    this.items.push({ x: canvas.width, top: topHeight, passed: false });
+                }
+                for (let i = 0; i < this.items.length; i++) {
+                    let p = this.items[i];
+                    p.x -= this.dx;
+                    
+                    // Kollisionsabfrage Block
+                    if (player.x < p.x + this.width && player.x + player.width > p.x &&
+                        (player.y < p.top || player.y + player.height > p.top + this.gap)) {
+                        gameState = 2;
+                    }
+                    
+                    // Punktezählung
+                    if (p.x + this.width < player.x && !p.passed) {
+                        score++;
+                        scoreEl.innerText = score;
+                        p.passed = true;
+                    }
+                    
+                    // Entfernen aus Array
+                    if (p.x + this.width < 0) {
+                        this.items.shift();
+                        i--;
+                    }
+                }
+            },
+            reset() { this.items = []; }
+        };
+        
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            player.draw();
+            if (gameState === 1) obstacles.draw();
+        }
+        
+        function update() {
+            if (gameState === 1) {
+                player.update();
+                obstacles.update();
+            }
+        }
+        
+        function loop() {
+            update();
+            draw();
+            frames++;
+            requestAnimationFrame(loop);
+        }
+        
+        function interact(e) {
+            e.preventDefault();
+            if (gameState === 0) {
+                gameState = 1;
+                msgEl.style.display = 'none';
+                player.flap();
+            } else if (gameState === 1) {
+                player.flap();
+            } else if (gameState === 2) {
+                gameState = 0;
+                player.y = 240;
+                player.velocity = 0;
+                obstacles.reset();
+                score = 0;
+                scoreEl.innerText = score;
+                msgEl.innerText = "Tippen zum Neustarten";
+                msgEl.style.display = 'block';
+                frames = 0;
+            }
+        }
+        
+        // Steuerung via Touch oder Mausklick
+        window.addEventListener('touchstart', interact, {passive: false});
+        window.addEventListener('mousedown', interact);
+        
+        loop();
+    </script>
+</body>
+</html>
