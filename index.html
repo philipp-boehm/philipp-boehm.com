@@ -7,367 +7,127 @@
     <title>Philipp Böhm | Software Engineer</title>
     
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="shortcut icon" href="favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-
-    <style>
-        :root {
-            --bg-color: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #475569;
-            --border-color: #e2e8f0;
-            --header-bg: rgba(255, 255, 255, 0.8);
-            --card-bg: #f8fafc;
-            --badge-bg: #f1f5f9;
-            --btn-bg: #f1f5f9;
-            --btn-hover: #e2e8f0;
-            --blue-link: #2563eb;
-            --blue-hover: #3b82f6;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-color: #0a0a0a;
-                --text-main: #ffffff;
-                --text-muted: #94a3b8;
-                --border-color: #1e293b;
-                --header-bg: rgba(10, 10, 10, 0.8);
-                --card-bg: #0f172a;
-                --badge-bg: #1e293b;
-                --btn-bg: #1e293b;
-                --btn-hover: #334155;
-                --blue-link: #60a5fa;
-                --blue-hover: #93c5fd;
-            }
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        html { 
-            font-family: system-ui, -apple-system, sans-serif;
-            scroll-behavior: smooth;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.5;
-        }
-
-        ::selection { background-color: #3b82f6; color: white; }
-        a { text-decoration: none; color: inherit; transition: color 0.2s; }
-
-        /* Header */
-        header {
-            position: fixed; top: 0; width: 100%; z-index: 50;
-            background: var(--header-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-color);
-        }
-        .header-content {
-            max-width: 48rem; margin: 0 auto; padding: 0 1.5rem;
-            height: 4rem; display: flex; align-items: center; justify-content: space-between;
-        }
-        .logo:hover { opacity: 0.8; }
-        .logo img { height: 2rem; width: 2rem; }
-        .btn-privat {
-            display: flex; align-items: center; gap: 0.5rem;
-            padding: 0.375rem 1rem; font-size: 0.875rem; font-weight: 500;
-            color: var(--text-muted); background: var(--btn-bg);
-            border-radius: 9999px; transition: all 0.2s;
-        }
-        .btn-privat:hover { color: var(--text-main); background: var(--btn-hover); }
-
-        /* Layout */
-        main { max-width: 48rem; margin: 0 auto; padding: 6rem 1.5rem; }
-        @media (min-width: 768px) { main { padding: 8rem 1.5rem; } }
-        section { margin-bottom: 6rem; }
-
-        /* Hero */
-        .badge {
-            display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px;
-            background: var(--badge-bg); color: var(--text-muted);
-            font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 1.5rem;
-        }
-        h1 { font-size: 3rem; font-weight: 700; line-height: 1.1; letter-spacing: -0.025em; margin-bottom: 1.5rem; }
-        @media (min-width: 768px) { h1 { font-size: 4.5rem; } }
-        .text-gradient {
-            background: linear-gradient(to right, #2563eb, #4f46e5);
-            -webkit-background-clip: text; color: transparent;
-        }
-        @media (prefers-color-scheme: dark) {
-            .text-gradient { background: linear-gradient(to right, #60a5fa, #818cf8); -webkit-background-clip: text; color: transparent; }
-        }
-        .hero-desc { font-size: 1.25rem; color: var(--text-muted); max-width: 36rem; }
-
-        /* Tech Stack */
-        .section-title-small { font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 1.5rem; }
-        .skill-flex { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
-        .skill-tag {
-            padding: 0.375rem 0.75rem; border-radius: 0.5rem; border: 1px solid var(--border-color);
-            background: var(--card-bg); font-size: 0.875rem; font-weight: 500;
-            transition: border-color 0.2s;
-        }
-        .skill-tag:hover { border-color: rgba(59, 130, 246, 0.5); }
-
-        /* Projects */
-        .projects-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 3rem; }
-        .projects-header h2 { font-size: 1.875rem; font-weight: 700; letter-spacing: -0.025em; }
-        .projects-header a { color: var(--blue-link); font-size: 0.875rem; font-weight: 500; }
-        .projects-header a:hover { color: var(--blue-hover); }
-        .projects-list { display: flex; flex-direction: column; gap: 3rem; }
-        
-        .card {
-            display: block; position: relative; overflow: hidden; border-radius: 1rem;
-            border: 1px solid var(--border-color); background: var(--card-bg);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .card:hover { transform: scale(1.01); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
-        .card-p { padding: 2rem; }
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
-        .card-title { font-size: 1.25rem; font-weight: 700; }
-        .card-desc { color: var(--text-muted); margin-bottom: 1.5rem; }
-        .card-tags { display: flex; gap: 0.5rem; }
-        .tag { padding: 0.25rem 0.5rem; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 0.25rem; font-size: 0.75rem; }
-        
-        /* Specific Neon Runner Card */
-        .card-neon { background: #000; border-color: #1e293b; color: white; }
-        .card-neon:hover { box-shadow: 0 25px 50px -12px rgba(6, 182, 212, 0.2); }
-        .neon-overlay { position: absolute; inset: 0; background: linear-gradient(to top, #000, rgba(15,23,42,0.8), rgba(15,23,42,0.4)); z-index: 10; }
-        .neon-content { position: relative; z-index: 20; padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
-        .neon-title { font-size: 1.5rem; font-weight: 700; font-family: 'Courier New', monospace; background: linear-gradient(to right, #22d3ee, #a855f7); -webkit-background-clip: text; color: transparent; }
-        .neon-badge { font-size: 0.75rem; font-family: monospace; color: #22d3ee; border: 1px solid #164e63; background: rgba(8, 51, 68, 0.3); padding: 0.25rem 0.5rem; border-radius: 0.25rem; }
-        .neon-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: #06b6d4; color: #000; font-weight: 700; border-radius: 9999px; transition: background 0.2s; }
-        .neon-btn:hover { background: #22d3ee; }
-        .neon-tech { display: flex; gap: 0.5rem; font-size: 0.75rem; color: #64748b; font-family: monospace; align-items: center; margin-top: 1rem; }
-        
-        /* Dashboard Card */
-        .card-opacity { opacity: 0.75; }
-
-        /* Footer */
-        footer { 
-            padding-top: 3rem; border-top: 1px solid var(--border-color); 
-            font-size: 0.875rem; color: var(--text-muted); 
-            display: flex; flex-direction: column; align-items: center; gap: 0.5rem; 
-        }
-        @media (min-width: 768px) { footer { flex-direction: row; justify-content: space-between; } }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Optionale Google Font für moderne Typografie -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-
     <header>
         <div class="header-content">
-            <a href="index.html" class="logo">
-                <img src="favicon.svg" alt="Logo">
-            </a>
+            <a href="index.html" class="logo">Philipp Böhm</a>
+            <nav>
+                <a href="https://github.com/philipp-boehm" target="_blank" rel="noopener">GitHub</a>
+            </nav>
         </div>
     </header>
 
     <main>
-        <section>
+        <section class="hero">
             <span class="badge">Verfügbar für Projekte</span>
-            <h1>
-                Software Engineer & <br />
-                <span class="text-gradient">Architekt.</span>
-            </h1>
+            <h1>Software Engineer & <span class="text-gradient">Architekt</span></h1>
             <p class="hero-desc">
                 Entwicklung von Softwarelösungen, Webanwendungen und Systemarchitekturen. 
                 Fokus auf Performance, Clean Code und Skalierbarkeit.
             </p>
         </section>
 
-        <section>
-            <h2 class="section-title-small">Programmiersprachen</h2>
-            <div class="skill-flex">
-                <div class="skill-tag">C</div>
-                <div class="skill-tag">C++</div>
-                <div class="skill-tag">C#</div>
-                <div class="skill-tag">XAML</div>
-                <div class="skill-tag">Java</div>
-                <div class="skill-tag">Python</div>
-                <div class="skill-tag">SQL</div>
-                <div class="skill-tag">Swift</div>
-                <div class="skill-tag">Assembler</div>
-                <div class="skill-tag">GLSL</div>
-                <div class="skill-tag">HTML</div>
-                <div class="skill-tag">PHP</div>
-                <div class="skill-tag">CSS</div>
-                <div class="skill-tag">JavaScript</div>
-                <div class="skill-tag">TypeScript</div>
-                <div class="skill-tag">LaTeX</div>
-                <div class="skill-tag">Markdown</div>
-                <div class="skill-tag">YAML</div>
-                <div class="skill-tag">Bash</div>
-                <div class="skill-tag">PowerShell</div>
-                <div class="skill-tag">Lisp</div>
-                <div class="skill-tag">Scheme</div>
-                <div class="skill-tag">Racket</div>
+        <section class="skills">
+            <h2>Kernkompetenzen</h2>
+            
+            <div class="skill-group">
+                <h3>Architektur & Backend</h3>
+                <div class="skill-flex">
+                    <span class="skill-tag">C# / .NET</span>
+                    <span class="skill-tag">Java</span>
+                    <span class="skill-tag">C / C++</span>
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">PHP / Laravel</span>
+                    <span class="skill-tag">Node.js</span>
+                    <span class="skill-tag">SQL</span>
+                    <span class="skill-tag">Redis</span>
+                    <span class="skill-tag">MQTT</span>
+                </div>
             </div>
 
-            <h2 class="section-title-small">Tools & Frameworks</h2>
-            <div class="skill-flex">
-                <div class="skill-tag">.NET</div>
-                <div class="skill-tag">Git</div>
-                <div class="skill-tag">GitHub</div>
-                <div class="skill-tag">AzureDevOps</div>
-                <div class="skill-tag">Docker</div>
-                <div class="skill-tag">Astro</div>
-                <div class="skill-tag">TailwindCSS</div>
-                <div class="skill-tag">Laravel</div>
-                <div class="skill-tag">Blade</div>
-                <div class="skill-tag">Alpine.js</div>
-                <div class="skill-tag">MySQL</div>
-                <div class="skill-tag">Node.js</div>
-                <div class="skill-tag">Next.js</div>
-                <div class="skill-tag">FastAPI</div>
-                <div class="skill-tag">Rest-API</div>
-                <div class="skill-tag">nginx</div>
-                <div class="skill-tag">JSON</div>
-                <div class="skill-tag">Redis</div>
-                <div class="skill-tag">Matlab</div>
-                <div class="skill-tag">Visual Studio</div>
-                <div class="skill-tag">Xamarin.Forms</div>
-                <div class="skill-tag">.NET MAUI</div>
-                <div class="skill-tag">WPF</div>
-                <div class="skill-tag">WinForms</div>
-                <div class="skill-tag">MQTT</div>
-                <div class="skill-tag">XSL</div>
-                <div class="skill-tag">Mendix</div>
-                <div class="skill-tag">Qt</div>
+            <div class="skill-group">
+                <h3>Frontend & Clients</h3>
+                <div class="skill-flex">
+                    <span class="skill-tag">HTML / CSS</span>
+                    <span class="skill-tag">TypeScript / JavaScript</span>
+                    <span class="skill-tag">Next.js / Astro</span>
+                    <span class="skill-tag">TailwindCSS</span>
+                    <span class="skill-tag">WPF / WinForms</span>
+                    <span class="skill-tag">.NET MAUI</span>
+                </div>
+            </div>
+
+            <div class="skill-group">
+                <h3>Tools & Infrastruktur</h3>
+                <div class="skill-flex">
+                    <span class="skill-tag">Git / GitHub</span>
+                    <span class="skill-tag">Docker</span>
+                    <span class="skill-tag">Azure DevOps</span>
+                    <span class="skill-tag">CI/CD</span>
+                    <span class="skill-tag">Bash / PowerShell</span>
+                    <span class="skill-tag">nginx</span>
+                </div>
             </div>
         </section>
 
-        <section>
-            <div class="projects-header">
-                <h2>Ausgewählte Projekte</h2>
-                <a href="https://github.com/philipp-boehm" target="_blank">GitHub Profil &rarr;</a>
-            </div>
-
-            <div class="projects-list">
-                <!-- Project -->
-                <div class="card card-neon">
-                    <div class="neon-overlay"></div>
-                    <div class="neon-content">
-                        <div>
-                            <div class="card-header">
-                                <h3 class="neon-title">NEON RUNNER</h3>
-                                <span class="neon-badge">Interactive</span>
-                            </div>
-                            <p class="card-desc" style="color: #cbd5e1; max-width: 32rem;">
-                                Ein browserbasiertes 3D-Endless-Runner Spiel. Entwickelt mit JavaScript und Three.js. 
-                                Features: Prozedurale Generierung, Kollisionserkennung und Audio-Synthese.
-                            </p>
-                        </div>
-                        <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
-                            <a href="neon-runner.html" target="_blank" class="neon-btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style="width: 20px; height: 20px;">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
-                                </svg>
-                                Jetzt spielen
-                            </a>
-                            <div class="neon-tech">
-                                <span>Three.js</span> <span>•</span> <span>HTML5 Canvas</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project -->
-                <div class="card card-neon">
-                    <div class="neon-overlay"></div>
-                    <div class="neon-content">
-                        <div>
-                            <div class="card-header">
-                                <h3 class="neon-title">NEON RUNNER</h3>
-                                <span class="neon-badge">Interactive</span>
-                            </div>
-                            <p class="card-desc" style="color: #cbd5e1; max-width: 32rem;">
-                                Ein browserbasiertes 3D-Endless-Runner Spiel. Entwickelt mit JavaScript und Three.js. 
-                                Features: Prozedurale Generierung, Kollisionserkennung und Audio-Synthese.
-                            </p>
-                        </div>
-                        <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
-                            <a href="flappy-box.html" target="_blank" class="neon-btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style="width: 20px; height: 20px;">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
-                                </svg>
-                                Jetzt spielen
-                            </a>
-                            <div class="neon-tech">
-                                <span>Three.js</span> <span>•</span> <span>HTML5 Canvas</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project -->
-                <div class="card card-neon">
-                    <div class="neon-overlay"></div>
-                    <div class="neon-content">
-                        <div>
-                            <div class="card-header">
-                                <h3 class="neon-title">NEON RUNNER</h3>
-                                <span class="neon-badge">Interactive</span>
-                            </div>
-                            <p class="card-desc" style="color: #cbd5e1; max-width: 32rem;">
-                                Ein browserbasiertes 3D-Endless-Runner Spiel. Entwickelt mit JavaScript und Three.js. 
-                                Features: Prozedurale Generierung, Kollisionserkennung und Audio-Synthese.
-                            </p>
-                        </div>
-                        <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
-                            <a href="neon-ribbon.html" target="_blank" class="neon-btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style="width: 20px; height: 20px;">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
-                                </svg>
-                                Jetzt spielen
-                            </a>
-                            <div class="neon-tech">
-                                <span>Three.js</span> <span>•</span> <span>HTML5 Canvas</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project -->
+        <section class="projects">
+            <h2>Ausgewählte Projekte</h2>
+            <div class="grid">
                 <div class="card">
-                    <div class="card-p">
-                        <div class="card-header">
-                            <h3 class="card-title">Portfolio V1</h3>
-                            <span style="font-size: 0.75rem; font-family: monospace; color: var(--text-muted);">2025</span>
-                        </div>
-                        <p class="card-desc">
-                            Ein hochperformantes, statisches Portfolio. Automatisiertes Deployment via GitHub Actions und SSH auf IONOS Webspace. 
-                            Architektur komplett ohne Frameworks.
-                        </p>
-                        <div class="card-tags">
-                            <span class="tag">HTML/CSS</span>
-                            <span class="tag">CI/CD</span>
-                        </div>
+                    <div class="card-header">
+                        <h3>Personal Dashboard</h3>
+                        <span class="status-badge development">In Entwicklung</span>
+                    </div>
+                    <p>Eine private Verwaltungszentrale für Notizen, Medien und Finanzen. Geschützter Login-Bereich mit strikter Trennung von Frontend und Backend.</p>
+                    <div class="card-tags">
+                        <span class="tag">PHP</span>
+                        <span class="tag">SQLite</span>
                     </div>
                 </div>
 
-                <!-- Project -->
-                <div class="card card-opacity">
-                    <div class="card-p">
-                        <div class="card-header">
-                            <h3 class="card-title">Personal Dashboard</h3>
-                            <span style="font-size: 0.75rem; font-family: monospace; color: #f97316;">In Entwicklung</span>
-                        </div>
-                        <p class="card-desc">
-                            Eine private Verwaltungszentrale für Notizen, Medien und Finanzen. 
-                            Geschützter Login-Bereich mit strikter Trennung von Frontend und Backend.
-                        </p>
-                        <div class="card-tags">
-                            <span class="tag">PHP</span>
-                            <span class="tag">SQLite</span>
-                        </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Portfolio V1</h3>
+                        <span class="status-badge completed">2025</span>
+                    </div>
+                    <p>Ein hochperformantes, statisches Portfolio. Automatisiertes Deployment via GitHub Actions und SSH auf IONOS Webspace. Architektur komplett ohne Frameworks.</p>
+                    <div class="card-tags">
+                        <span class="tag">HTML/CSS</span>
+                        <span class="tag">CI/CD</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <footer>
-            <p>&copy; <script>document.write(new Date().getFullYear())</script> Philipp Böhm. All rights reserved.</p>
-            <p>Stand: Letzte Aktualisierung <script>document.write(new Date().toLocaleDateString('de-DE', { month: 'long', year: 'numeric' }))</script></p>
-        </footer>
+        <section class="playground">
+            <h2>Playground & Experimente</h2>
+            <p class="section-desc">Interaktive Browser-Experimente und Minispiele, entwickelt mit Canvas API und Three.js.</p>
+            <div class="grid grid-small">
+                <a href="neon-runner.html" target="_blank" class="card-small">
+                    <h4>Neon Runner</h4>
+                    <p>3D-Endless-Runner</p>
+                </a>
+                <a href="neon-ribbon.html" target="_blank" class="card-small">
+                    <h4>Lichtband</h4>
+                    <p>Canvas Fluiddynamik</p>
+                </a>
+                <a href="flappy-box.html" target="_blank" class="card-small">
+                    <h4>Minispiel</h4>
+                    <p>2D Physik-Prototyp</p>
+                </a>
+            </div>
+        </section>
     </main>
+
+    <footer>
+        <p>&copy; <script>document.write(new Date().getFullYear())</script> Philipp Böhm. All rights reserved.</p>
+    </footer>
 </body>
 </html>
