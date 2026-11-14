@@ -1,6 +1,1 @@
-# Datenbank
-*.sqlite
-*.db
-
-# Lokale Konfigurationen (falls verwendet)
 .env

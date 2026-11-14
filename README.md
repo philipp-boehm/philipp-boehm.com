@@ -3,10 +3,6 @@
 Dies ist der öffentliche Frontend-Teil des **Personal Ecosystems**.
 Es handelt sich um ein statisches One-Page-Portfolio ohne externe Abhängigkeiten.
 
-> **Projekt-Kontext:**
-> Dieses Repository ist das Frontend. Das zugehörige Backend liegt unter:
-> **[Personal Dashboard (Backend)](https://github.com/philipp-boehm/personal.philipp-boehm.com)**
-
 **Live URL:** [philipp-boehm.com](https://philipp-boehm.com)
 
 ## Systemarchitektur & Tech Stack
@@ -15,7 +11,7 @@ Das Projekt wurde auf maximale Langlebigkeit und Wartungsarmut optimiert (Zero-D
 
 * **Frontend:** HTML5, CSS3 (Vanilla)
 * **Architektur:** Single-File-Ansatz pro Route (CSS ist nativ im `<head>` eingebettet)
-* **Hosting:** IONOS Webspace
+* **Hosting:** GitHub Pages
 * **Deployment:** GitHub Actions (via SCP)
 
 ## Verzeichnisstruktur
@@ -49,8 +45,7 @@ Da das Projekt ohne abstrahierende Frameworks arbeitet, sind bei der Weiterentwi
 
 ## Deployment
 
-Der Upload erfolgt vollautomatisch via GitHub Actions bei jedem Push auf den `main`-Branch.
-Die Pipeline nutzt SCP (Secure Copy), um die Dateien sicher auf den IONOS-Server (`www/philipp-boehm.com`) zu übertragen.
+Das Hosting erfolgt vollautomatisch über GitHub Pages. Jeder Push in den main-Branch aktualisiert die Live-Seite.
 
 ---
 **Autor:** Philipp Böhm  
