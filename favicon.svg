@@ -1,11 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="20 20 60 60">
-    <defs>
-        <linearGradient id="gradContrastBluePurple" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#22d3ee" />
-            <stop offset="100%" stop-color="#7c3aed" />
-        </linearGradient>
-    </defs>
-    <path d="M 30 40 L 30 30 L 40 30" fill="none" stroke="url(#gradContrastBluePurple)" stroke-width="2" />
-    <path d="M 70 60 L 70 70 L 60 70" fill="none" stroke="url(#gradContrastBluePurple)" stroke-width="2" />
-    <text x="50" y="52.5" font-family="system-ui, -apple-system, sans-serif" font-weight="400" font-size="34" fill="url(#gradContrastBluePurple)" text-anchor="middle" dominant-baseline="middle" letter-spacing="-0.5">PB</text>
+    <style>
+        /* Standard: Heller Modus (Schwarzes Icon) */
+        .klammer { stroke: #000000; }
+        .schrift { fill: #000000; }
+        
+        /* Dark Mode (Weißes Icon) */
+        @media (prefers-color-scheme: dark) {
+            .klammer { stroke: #ffffff; }
+            .schrift { fill: #ffffff; }
+        }
+    </style>
+    <path d="M 30 40 L 30 30 L 40 30" fill="none" class="klammer" stroke-width="2" />
+    <path d="M 70 60 L 70 70 L 60 70" fill="none" class="klammer" stroke-width="2" />
+    <text x="50" y="52.5" font-family="system-ui, -apple-system, sans-serif" font-weight="400" font-size="34" class="schrift" text-anchor="middle" dominant-baseline="middle" letter-spacing="-0.5">PB</text>
 </svg>
